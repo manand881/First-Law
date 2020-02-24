@@ -12,6 +12,7 @@
     <script type="text/javascript" >
 
         var rodLength_Global = 80;
+        var rodtravel=0;
 
         function dummy() {
 
@@ -45,51 +46,49 @@
                 angle = 0,
                 dAngle = 0.1,
                 rodLength = 80,
-                pistonHeight = 30,
+                left_wall_x=220,
+                left_wall_y_start=150,
+                left_wall_y_end=350,
+                right_wall_x=350,
+                right_wall_y_start=150,
+                right_wall_y_end=350,
+                piston_width=right_wall_x-left_wall_x,
+                piston_height = 40,
+                piston_x=220,
+                piston_y=220,
+
 
 
                 cylinder = {
                     draw : function () {
-                        // crankcase
                         ctx.strokeStyle = crankCaseColor;
                         ctx.fillStyle = crankCaseColor;
-                        ctx.lineWidth = 3;
+                        ctx.lineWidth = 4;
                         ctx.beginPath();
-                        ctx.arc(crankCenterX, crankCenterY, crankCaseWidth,  upAngle + semiOpeningAngle, upAngle - semiOpeningAngle);
+
+                        // left cylinder wall
+
+                        ctx.moveTo(left_wall_x,left_wall_y_start);
+                        ctx.lineTo(left_wall_x,left_wall_y_end);
                         ctx.stroke();
-                        // left wall
-                        ctx.moveTo(crankCenterX - cylinderBaseSemiWidth, cylinderBaseY + ctx.lineWidth / 2);
-                        ctx.lineTo(crankCenterX - cylinderBaseSemiWidth, cylinderBaseY - cylinderHeight);
-                        // right wall
-                        ctx.moveTo(crankCenterX + cylinderBaseSemiWidth, cylinderBaseY + ctx.lineWidth / 2);
-                        ctx.lineTo(crankCenterX + cylinderBaseSemiWidth, cylinderBaseY - cylinderHeight);
-                        // top
-                        ctx.moveTo(crankCenterX + cylinderBaseSemiWidth + ctx.lineWidth / 2, cylinderBaseY - cylinderHeight);
-                        ctx.lineTo(crankCenterX - cylinderBaseSemiWidth - ctx.lineWidth / 2, cylinderBaseY - cylinderHeight);
+
+                        // right cylinder wall
+
+                        ctx.moveTo(right_wall_x,right_wall_y_start);
+                        ctx.lineTo(right_wall_x,right_wall_y_end);
                         ctx.stroke();
-                        // crank
-                        angle -= dAngle;
-                        var crankJoinX = crankCenterX + Math.cos(angle) * crankCaseWidth * 0.5;
-                        var crankJoinY = crankCenterY + Math.sin(angle) * crankCaseWidth * 0.5;
-                        ctx.strokeStyle = crankColor;
-                        ctx.lineWidth = 10;
-                        ctx.beginPath();
-                        ctx.moveTo(crankJoinX, crankJoinY);
-                        var rodY = crankJoinY - Math.sqrt(Math.pow(rodLength_Global, 2) - Math.pow(crankJoinX - crankCenterX, 2));
-                        ctx.lineTo(crankCenterX, rodY);
+
+                        // bottom cylinder wall
+
+                        ctx.moveTo(left_wall_x,left_wall_y_end);
+                        ctx.lineTo(right_wall_x,right_wall_y_end);
                         ctx.stroke();
-                        // crankshaft
-                        ctx.beginPath();
-                        ctx.fillStyle = crankShaftColor;
-                        ctx.arc(crankCenterX, crankCenterY, crankCaseWidth * 0.9 - ctx.lineWidth,  0, 2 * Math.PI);
-                        ctx.fill();
-                        ctx.fillStyle = backgroundColor;
-                        ctx.beginPath();
-                        ctx.arc(crankJoinX, crankJoinY, crankCaseWidth * 0.1,  0, 2 * Math.PI);
-                        ctx.fill();
+
                         // piston
+
                         ctx.fillStyle = pistonColor;
-                        ctx.fillRect(crankCenterX - cylinderBaseSemiWidth + ctx.lineWidth / 2, rodY - pistonHeight / 2, 2 * cylinderBaseSemiWidth - ctx.lineWidth, pistonHeight);
+                        ctx.fillRect(piston_x+2,piston_y+rodtravel,piston_width-4,piston_height);
+
                     }
                 };
 
@@ -124,9 +123,9 @@
 
             //Variable r1 slider and number input types
 
-            $('#l1slider').slider("value", 80);
-            $('#l1spinner').spinner("value", 80);
-
+            $('#l1slider').slider("value", 0);
+            $('#l1spinner').spinner("value", 0);
+            rodLength_Global=80;
 
         }
 
@@ -135,14 +134,14 @@
 
             // Variable r1 slider and number input types
 
-            $('#l1slider').slider({ max : 100, min : 20, step : 1 });		    // slider initialisation : jQuery widget
-            $('#l1spinner').spinner({ max : 100, min : 20, step : 1 });		    // number initialisation : jQuery widget
+            $('#l1slider').slider({ max : 40, min : -40, step : 1 });		    // slider initialisation : jQuery widget
+            $('#l1spinner').spinner({ max : 40, min : -40, step : 1 });		    // number initialisation : jQuery widget
 
             // monitoring change in value and connecting slider and number
             // setting trace point coordinate arrays to empty on change of link length
 
-            $( "#l1slider" ).on( "slide", function( e, ui ) { $('#l1spinner').spinner("value",ui.value);rodLength_Global=ui.value } );
-            $( "#l1spinner" ).on( "spin", function( e, ui ) { $('#l1slider').slider("value",ui.value);rodLength_Global=ui.value } );
+            $( "#l1slider" ).on( "slide", function( e, ui ) { $('#l1spinner').spinner("value",ui.value);rodLength_Global=ui.value;rodtravel=ui.value; } );
+            $( "#l1spinner" ).on( "spin", function( e, ui ) { $('#l1slider').slider("value",ui.value);rodLength_Global=ui.value;rodtravel=ui.value; } );
             $( "#l1spinner" ).on( "change", function() {  varchange() } );
             rodLength_Global=$('#l1spinner').spinner("value");
 
@@ -154,8 +153,6 @@
         {
 
             $('#l1slider').slider("value", $('#l1spinner').spinner('value'));  //updating slider location with change in spinner(debug)
-
-
 
         }
 
