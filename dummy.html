@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        // https://twitter.com/msvaljek
+
+        window.requestAnimFrame = (function(){
+            return window.requestAnimationFrame     ||
+                window.webkitRequestAnimationFrame  ||
+                window.mozRequestAnimationFrame     ||
+                window.oRequestAnimationFrame       ||
+                window.msRequestAnimationFrame      ||
+                function( callback ) {
+                    window.setTimeout(callback, 1000 / 60);
+                };
+        })();
+
+        var canvas = document.getElementById('mainCanvas'),
+            ctx = canvas.getContext('2d'),
+            crankCaseColor = '#9EA18C',
+            backgroundColor = '#463E41',
+            pistonColor = '#676482',
+            crankColor = '#5D5B6E',
+            crankShaftColor = 'rgba(99, 124, 145, 0.8)',//'#637C91',
+            crankCaseWidth = 50,
+            crankCenterX = 100,
+            crankCenterY = 150,
+            upAngle = 1.5 * Math.PI,
+            semiOpeningAngle = Math.asin(0.5),
+            cylinderBaseY = crankCenterY + Math.sin(upAngle + semiOpeningAngle) * crankCaseWidth,
+            cylinderBaseSemiWidth = Math.cos(upAngle + semiOpeningAngle) * crankCaseWidth,
+            cylinderHeight = 85,
+            angle = 0,
+            dAngle = 0.1,
+            rodLength = 80,
+            pistonHeight = 30,
+
+            cylinder = {
+                draw : function () {
+                    // crankcase
+                    ctx.strokeStyle = crankCaseColor;
+                    ctx.fillStyle = crankCaseColor;
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(crankCenterX, crankCenterY, crankCaseWidth,  upAngle + semiOpeningAngle, upAngle - semiOpeningAngle);
+                    ctx.stroke();
+                    // left wall
+                    ctx.moveTo(crankCenterX - cylinderBaseSemiWidth, cylinderBaseY + ctx.lineWidth / 2);
+                    ctx.lineTo(crankCenterX - cylinderBaseSemiWidth, cylinderBaseY - cylinderHeight);
+                    // right wall
+                    ctx.moveTo(crankCenterX + cylinderBaseSemiWidth, cylinderBaseY + ctx.lineWidth / 2);
+                    ctx.lineTo(crankCenterX + cylinderBaseSemiWidth, cylinderBaseY - cylinderHeight);
+                    // top
+                    ctx.moveTo(crankCenterX + cylinderBaseSemiWidth + ctx.lineWidth / 2, cylinderBaseY - cylinderHeight);
+                    ctx.lineTo(crankCenterX - cylinderBaseSemiWidth - ctx.lineWidth / 2, cylinderBaseY - cylinderHeight);
+                    ctx.stroke();
+                    // crank
+                    angle -= dAngle;
+                    var crankJoinX = crankCenterX + Math.cos(angle) * crankCaseWidth * 0.5;
+                    var crankJoinY = crankCenterY + Math.sin(angle) * crankCaseWidth * 0.5;
+                    ctx.strokeStyle = crankColor;
+                    ctx.lineWidth = 10;
+                    ctx.beginPath();
+                    ctx.moveTo(crankJoinX, crankJoinY);
+                    var rodY = crankJoinY - Math.sqrt(Math.pow(rodLength, 2) - Math.pow(crankJoinX - crankCenterX, 2));
+                    ctx.lineTo(crankCenterX, rodY);
+                    ctx.stroke();
+                    // crankshaft
+                    ctx.beginPath();
+                    ctx.fillStyle = crankShaftColor;
+                    ctx.arc(crankCenterX, crankCenterY, crankCaseWidth * 0.9 - ctx.lineWidth,  0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.fillStyle = backgroundColor;
+                    ctx.beginPath();
+                    ctx.arc(crankJoinX, crankJoinY, crankCaseWidth * 0.1,  0, 2 * Math.PI);
+                    ctx.fill();
+                    // piston
+                    ctx.fillStyle = pistonColor;
+                    ctx.fillRect(crankCenterX - cylinderBaseSemiWidth + ctx.lineWidth / 2, rodY - pistonHeight / 2, 2 * cylinderBaseSemiWidth - ctx.lineWidth, pistonHeight);
+                }
+            };
+
+        (function animloop(){
+            requestAnimFrame(animloop);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            cylinder.draw();
+        })();
+    </script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--<canvas id="mainCanvas" width="600" height="300"></canvas>-->
+</body>
+</html>

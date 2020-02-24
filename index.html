@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>First Law</title>
+
+    <link rel="stylesheet" href="sins/MOMstyle.css" />
+
+    <script src='sins/jquery.min.js'></script>
+    <script src='sins/jquery-ui.min.js'></script>
+
+    <script type="text/javascript" >
+
+        var rodLength_Global = 80;
+
+        function dummy() {
+
+            window.requestAnimFrame = (function(){
+                return window.requestAnimationFrame     ||
+                    window.webkitRequestAnimationFrame  ||
+                    window.mozRequestAnimationFrame     ||
+                    window.oRequestAnimationFrame       ||
+                    window.msRequestAnimationFrame      ||
+                    function( callback ) {
+                        window.setTimeout(callback, 1000 / 60);
+                    };
+            })();
+
+
+            var canvas = document.getElementById('simscreen'),
+                ctx = canvas.getContext('2d'),
+                crankCaseColor = '#9EA18C',
+                backgroundColor = '#463E41',
+                pistonColor = '#676482',
+                crankColor = '#5D5B6E',
+                crankShaftColor = 'rgba(99, 124, 145, 0.8)',//'#637C91',
+                crankCaseWidth = 50,
+                crankCenterX = 270,
+                crankCenterY = 250,
+                upAngle = 1.5 * Math.PI,
+                semiOpeningAngle = Math.asin(0.5),
+                cylinderBaseY = crankCenterY + Math.sin(upAngle + semiOpeningAngle) * crankCaseWidth,
+                cylinderBaseSemiWidth = Math.cos(upAngle + semiOpeningAngle) * crankCaseWidth,
+                cylinderHeight = 85,
+                angle = 0,
+                dAngle = 0.1,
+                rodLength = 80,
+                pistonHeight = 30,
+
+
+                cylinder = {
+                    draw : function () {
+                        // crankcase
+                        ctx.strokeStyle = crankCaseColor;
+                        ctx.fillStyle = crankCaseColor;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(crankCenterX, crankCenterY, crankCaseWidth,  upAngle + semiOpeningAngle, upAngle - semiOpeningAngle);
+                        ctx.stroke();
+                        // left wall
+                        ctx.moveTo(crankCenterX - cylinderBaseSemiWidth, cylinderBaseY + ctx.lineWidth / 2);
+                        ctx.lineTo(crankCenterX - cylinderBaseSemiWidth, cylinderBaseY - cylinderHeight);
+                        // right wall
+                        ctx.moveTo(crankCenterX + cylinderBaseSemiWidth, cylinderBaseY + ctx.lineWidth / 2);
+                        ctx.lineTo(crankCenterX + cylinderBaseSemiWidth, cylinderBaseY - cylinderHeight);
+                        // top
+                        ctx.moveTo(crankCenterX + cylinderBaseSemiWidth + ctx.lineWidth / 2, cylinderBaseY - cylinderHeight);
+                        ctx.lineTo(crankCenterX - cylinderBaseSemiWidth - ctx.lineWidth / 2, cylinderBaseY - cylinderHeight);
+                        ctx.stroke();
+                        // crank
+                        angle -= dAngle;
+                        var crankJoinX = crankCenterX + Math.cos(angle) * crankCaseWidth * 0.5;
+                        var crankJoinY = crankCenterY + Math.sin(angle) * crankCaseWidth * 0.5;
+                        ctx.strokeStyle = crankColor;
+                        ctx.lineWidth = 10;
+                        ctx.beginPath();
+                        ctx.moveTo(crankJoinX, crankJoinY);
+                        var rodY = crankJoinY - Math.sqrt(Math.pow(rodLength_Global, 2) - Math.pow(crankJoinX - crankCenterX, 2));
+                        ctx.lineTo(crankCenterX, rodY);
+                        ctx.stroke();
+                        // crankshaft
+                        ctx.beginPath();
+                        ctx.fillStyle = crankShaftColor;
+                        ctx.arc(crankCenterX, crankCenterY, crankCaseWidth * 0.9 - ctx.lineWidth,  0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.fillStyle = backgroundColor;
+                        ctx.beginPath();
+                        ctx.arc(crankJoinX, crankJoinY, crankCaseWidth * 0.1,  0, 2 * Math.PI);
+                        ctx.fill();
+                        // piston
+                        ctx.fillStyle = pistonColor;
+                        ctx.fillRect(crankCenterX - cylinderBaseSemiWidth + ctx.lineWidth / 2, rodY - pistonHeight / 2, 2 * cylinderBaseSemiWidth - ctx.lineWidth, pistonHeight);
+                    }
+                };
+
+
+            (function animloop(){
+                requestAnimFrame(animloop);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                cylinder.draw();
+            })();
+
+                }
+
+
+        function simstate() {
+
+            if (flag===true){
+                document.getElementById('playpausebutton').src="sins/blueplaydull.png";
+                flag=false;
+
+            }
+
+            else {
+                document.getElementById('playpausebutton').src="sins/bluepausedull.png";
+                flag=true;
+            }
+        }
+
+        function varinit()
+        {
+
+            varchange();
+
+            //Variable r1 slider and number input types
+
+            $('#l1slider').slider("value", 80);
+            $('#l1spinner').spinner("value", 80);
+
+
+        }
+
+        function varchange()
+        {
+
+            // Variable r1 slider and number input types
+
+            $('#l1slider').slider({ max : 100, min : 20, step : 1 });		    // slider initialisation : jQuery widget
+            $('#l1spinner').spinner({ max : 100, min : 20, step : 1 });		    // number initialisation : jQuery widget
+
+            // monitoring change in value and connecting slider and number
+            // setting trace point coordinate arrays to empty on change of link length
+
+            $( "#l1slider" ).on( "slide", function( e, ui ) { $('#l1spinner').spinner("value",ui.value);rodLength_Global=ui.value } );
+            $( "#l1spinner" ).on( "spin", function( e, ui ) { $('#l1slider').slider("value",ui.value);rodLength_Global=ui.value } );
+            $( "#l1spinner" ).on( "change", function() {  varchange() } );
+            rodLength_Global=$('#l1spinner').spinner("value");
+
+            varupdate();
+
+        }
+
+        function varupdate()
+        {
+
+            $('#l1slider').slider("value", $('#l1spinner').spinner('value'));  //updating slider location with change in spinner(debug)
+
+
+
+        }
+
+    </script>
+
+
+</head>
+
+<body onload="varinit();dummy();">
+
+<!-- Defining Container for Simulation -->
+<noscript>
+    The simulation requires JavaScript to be enabled.
+</noscript>
+<div id="container">
+
+    <!-- Replace TITLE with simulation title to be displayed next to logo-->
+    <div id="simtitle">First Law of Thermodynamics</div>
+
+    <!-- Region for simulation display -->
+    <canvas id="simscreen" height="400px" width="550px"></canvas>
+
+    <div id="titleincanvas"></div>
+
+    <!-- Region for comment / question prompts -->
+    <div id="commentboxleft"></div>
+    <div id="commentboxright"></div>
+
+    <!-- DND-Title of region for variables display -->
+    <div id="vartitle">VARIABLES</div>
+
+    <!-- Region for Input parameters of simulation -->
+    <div id="variables">
+
+        <div class="variable">
+            <div class="varname"><p title="Link Length">Length(cm)</p>
+                <input id="l1spinner"></div>
+            <div id="l1slider"></div>
+        </div>
+
+    </div>
+
+    <!-- DND-Title of region for controls display -->
+    <div id="ctrltitle">CONTROLS</div>
+
+    <!-- Region for User controls of simulation -->
+    <div id="controls">
+        <img id="playpausebutton" onclick="simstate();" src="sins/bluepausedull.png" />
+        <img id="rotationbutton" onclick="location.reload();" src="sins/bluecwdull.png" />
+    </div>
+
+    <!-- DND-Copyright display-->
+    <div id="copyright" title="Developer : SOLVEr"> Copyright &copy; SOLVE The Virtual Lab @ NITK Surathkal </div>
+
+</div><!-- Container div close -->
+</body>
+</html>
