@@ -12,6 +12,10 @@
     <script type="text/javascript" >
 
         var rodtravel=0;
+        var force=0;
+        var work=0;
+        var energy=0;
+        var heat=0;
 
         function dummy() {
 
@@ -55,11 +59,13 @@
                 piston_height = 40,
                 piston_x=220,
                 piston_y=220,
+                step=0.1,
 
 
 
                 cylinder = {
                     draw : function () {
+
                         ctx.strokeStyle = crankCaseColor;
                         ctx.fillStyle = crankCaseColor;
                         ctx.lineWidth = 4;
@@ -98,7 +104,7 @@
                         ctx.fillStyle = pistonColor;
                         ctx.lineWidth = 10;
                         ctx.moveTo((right_wall_x + left_wall_x)/2,piston_y+rodtravel);
-                        ctx.lineTo((right_wall_x + left_wall_x)/2,piston_y+rodtravel-50);
+                        ctx.lineTo((right_wall_x + left_wall_x)/2,piston_y+rodtravel-70);
                         ctx.lineCap = 'round';
                         ctx.stroke();
                     }
@@ -137,7 +143,17 @@
 
             $('#l1slider').slider("value", 0);
             $('#l1spinner').spinner("value", 0);
-            rodLength_Global=80;
+            $('#l2slider').slider("value", 0);
+            $('#l2spinner').spinner("value", 0);
+            $('#l3slider').slider("value", 0);
+            $('#l3spinner').spinner("value", 0);
+            $('#l4slider').slider("value", 0);
+            $('#l4spinner').spinner("value", 0);
+            rodtravel=0;
+            force=0;
+            heat=0;
+            energy=0;
+            work=0;
 
         }
 
@@ -148,14 +164,44 @@
 
             $('#l1slider').slider({ max : 40, min : -40, step : 1 });		    // slider initialisation : jQuery widget
             $('#l1spinner').spinner({ max : 40, min : -40, step : 1 });		    // number initialisation : jQuery widget
+            $('#l2slider').slider({ max : 40, min : -40, step : 1 });		    // slider initialisation : jQuery widget
+            $('#l2spinner').spinner({ max : 40, min : -40, step : 1 });		    // number initialisation : jQuery widget
+            $('#l3slider').slider({ max : 40, min : -40, step : 1 });		    // slider initialisation : jQuery widget
+            $('#l3spinner').spinner({ max : 40, min : -40, step : 1 });		    // number initialisation : jQuery widget
+            $('#l4slider').slider({ max : 40, min : -40, step : 1 });		    // slider initialisation : jQuery widget
+            $('#l4spinner').spinner({ max : 40, min : -40, step : 1 });		    // number initialisation : jQuery widget
 
+            // monitoring change in value and connecting slider and number
             // monitoring change in value and connecting slider and number
             // setting trace point coordinate arrays to empty on change of link length
 
-            $( "#l1slider" ).on( "slide", function( e, ui ) { $('#l1spinner').spinner("value",ui.value);rodtravel=ui.value; } );
-            $( "#l1spinner" ).on( "spin", function( e, ui ) { $('#l1slider').slider("value",ui.value);rodtravel=ui.value; } );
+            $( "#l1slider" ).on(  "slide", function( e, ui ) { $('#l1spinner').spinner("value",ui.value);rodtravel=ui.value;document.getElementById("p1").innerHTML=rodtravel;work=parseInt(force*rodtravel); document.getElementById("p5").innerHTML=work;} );
+            $( "#l1spinner" ).on( "spin", function( e, ui ) { $('#l1slider').slider("value",ui.value);rodtravel=ui.value;document.getElementById("p1").innerHTML=rodtravel;work=parseInt(force*rodtravel); document.getElementById("p5").innerHTML=work; } );
             $( "#l1spinner" ).on( "change", function() {  varchange() } );
-            rodLength_Global=$('#l1spinner').spinner("value");
+            $( "#l2slider" ).on(  "slide", function( e, ui ) { $('#l2spinner').spinner("value",ui.value);force=ui.value;document.getElementById("p2").innerHTML=force;work=parseInt(force*rodtravel); document.getElementById("p5").innerHTML=work; } );
+            $( "#l2spinner" ).on( "spin", function( e, ui ) { $('#l2slider').slider("value",ui.value);force=ui.value;document.getElementById("p2").innerHTML=force;work=parseInt(force*rodtravel); document.getElementById("p5").innerHTML=work; } );
+            $( "#l2spinner" ).on( "change", function() {  varchange() } );
+            $( "#l3slider" ).on(  "slide", function( e, ui ) { $('#l3spinner').spinner("value",ui.value);heat=ui.value;document.getElementById("p3").innerHTML=heat; } );
+            $( "#l3spinner" ).on( "spin", function( e, ui ) { $('#l3slider').slider("value",ui.value);heat=ui.value;document.getElementById("p3").innerHTML=heat; } );
+            $( "#l3spinner" ).on( "change", function() {  varchange() } );
+            $( "#l4slider" ).on(  "slide", function( e, ui ) { $('#l4spinner').spinner("value",ui.value);energy=ui.value;document.getElementById("p4").innerHTML=energy; } );
+            $( "#l4spinner" ).on( "spin", function( e, ui ) { $('#l4slider').slider("value",ui.value);energy=ui.value;document.getElementById("p4").innerHTML=energy; } );
+            $( "#l4spinner" ).on( "change", function() {  varchange() } );
+
+            rodtravel=$('#l1spinner').spinner("value");
+            document.getElementById("p1").innerHTML=rodtravel;
+
+            force=$('#l2spinner').spinner("value");
+            document.getElementById("p2").innerHTML=force;
+
+            heat=$('#l3spinner').spinner("value");
+            document.getElementById("p3").innerHTML=heat;
+
+            energy=$('#l4spinner').spinner("value");
+            document.getElementById("p4").innerHTML=energy;
+
+            work=parseInt(force*rodtravel);
+            document.getElementById("p5").innerHTML=work;
 
             varupdate();
 
@@ -165,6 +211,10 @@
         {
 
             $('#l1slider').slider("value", $('#l1spinner').spinner('value'));  //updating slider location with change in spinner(debug)
+            $('#l2slider').slider("value", $('#l2spinner').spinner('value'));  //updating slider location with change in spinner(debug)
+            $('#l3slider').slider("value", $('#l3spinner').spinner('value'));  //updating slider location with change in spinner(debug)
+            $('#l4slider').slider("value", $('#l4spinner').spinner('value'));  //updating slider location with change in spinner(debug)
+
 
         }
 
@@ -190,8 +240,16 @@
     <div id="titleincanvas"></div>
 
     <!-- Region for comment / question prompts -->
-    <div id="commentboxleft"></div>
-    <div id="commentboxright"></div>
+    <div id="commentboxleft">
+        <p id="p1" style="line-height:0.4"></p>
+        <p id="p2" style="line-height:0.4"></p>
+        <p id="p3" style="line-height:0.4"></p>
+    </div>
+    <div id="commentboxright">
+        <p id="p4" style="line-height:0.4"></p>
+        <p id="p5" style="line-height:0.4"></p>
+        <p id="p6" style="line-height:0.4"></p>
+    </div>
 
     <!-- DND-Title of region for variables display -->
     <div id="vartitle">VARIABLES</div>
@@ -200,9 +258,21 @@
     <div id="variables">
 
         <div class="variable">
-            <div class="varname"><p title="Link Length">Travel (cm)</p>
+            <div class="varname"><p title="Link Length">Travel (m)</p>
                 <input id="l1spinner"></div>
             <div id="l1slider"></div>
+            <br>
+            <div class="varname"><p title="Link Length">Force (N)</p>
+                <input id="l2spinner"></div>
+            <div id="l2slider"></div>
+            <br>
+            <div class="varname"><p title="Link Length">Heat (J)</p>
+                <input id="l3spinner"></div>
+            <div id="l3slider"></div>
+            <br>
+            <div class="varname"><p title="Link Length">Energy (J)</p>
+                <input id="l4spinner"></div>
+            <div id="l4slider"></div>
         </div>
 
     </div>
