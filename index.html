@@ -11,7 +11,6 @@
 
     <script type="text/javascript" >
 
-        var rodLength_Global = 80;
         var rodtravel=0;
 
         function dummy() {
@@ -64,31 +63,44 @@
                         ctx.strokeStyle = crankCaseColor;
                         ctx.fillStyle = crankCaseColor;
                         ctx.lineWidth = 4;
-                        ctx.beginPath();
 
                         // left cylinder wall
-
+                        ctx.beginPath();
                         ctx.moveTo(left_wall_x,left_wall_y_start);
                         ctx.lineTo(left_wall_x,left_wall_y_end);
                         ctx.stroke();
 
                         // right cylinder wall
 
+                        ctx.beginPath();
                         ctx.moveTo(right_wall_x,right_wall_y_start);
                         ctx.lineTo(right_wall_x,right_wall_y_end);
                         ctx.stroke();
 
                         // bottom cylinder wall
 
+                        ctx.beginPath();
                         ctx.moveTo(left_wall_x,left_wall_y_end);
                         ctx.lineTo(right_wall_x,right_wall_y_end);
                         ctx.stroke();
 
                         // piston
 
+                        ctx.beginPath();
                         ctx.fillStyle = pistonColor;
                         ctx.fillRect(piston_x+2,piston_y+rodtravel,piston_width-4,piston_height);
+                        ctx.stroke();
 
+                        // connecting rod
+
+                        ctx.beginPath();
+                        ctx.strokeStyle = pistonColor;
+                        ctx.fillStyle = pistonColor;
+                        ctx.lineWidth = 10;
+                        ctx.moveTo((right_wall_x + left_wall_x)/2,piston_y+rodtravel);
+                        ctx.lineTo((right_wall_x + left_wall_x)/2,piston_y+rodtravel-50);
+                        ctx.lineCap = 'round';
+                        ctx.stroke();
                     }
                 };
 
@@ -140,8 +152,8 @@
             // monitoring change in value and connecting slider and number
             // setting trace point coordinate arrays to empty on change of link length
 
-            $( "#l1slider" ).on( "slide", function( e, ui ) { $('#l1spinner').spinner("value",ui.value);rodLength_Global=ui.value;rodtravel=ui.value; } );
-            $( "#l1spinner" ).on( "spin", function( e, ui ) { $('#l1slider').slider("value",ui.value);rodLength_Global=ui.value;rodtravel=ui.value; } );
+            $( "#l1slider" ).on( "slide", function( e, ui ) { $('#l1spinner').spinner("value",ui.value);rodtravel=ui.value; } );
+            $( "#l1spinner" ).on( "spin", function( e, ui ) { $('#l1slider').slider("value",ui.value);rodtravel=ui.value; } );
             $( "#l1spinner" ).on( "change", function() {  varchange() } );
             rodLength_Global=$('#l1spinner').spinner("value");
 
@@ -188,7 +200,7 @@
     <div id="variables">
 
         <div class="variable">
-            <div class="varname"><p title="Link Length">Length(cm)</p>
+            <div class="varname"><p title="Link Length">Travel (cm)</p>
                 <input id="l1spinner"></div>
             <div id="l1slider"></div>
         </div>
