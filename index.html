@@ -16,6 +16,7 @@
         var work=0;
         var energy=0;
         var heat=0;
+        var flag=true;
 
         function dummy() {
 
@@ -59,8 +60,6 @@
                 piston_height = 40,
                 piston_x=220,
                 piston_y=220,
-                step=0.1,
-
 
 
                 cylinder = {
@@ -71,6 +70,7 @@
                         ctx.lineWidth = 4;
 
                         // left cylinder wall
+
                         ctx.beginPath();
                         ctx.moveTo(left_wall_x,left_wall_y_start);
                         ctx.lineTo(left_wall_x,left_wall_y_end);
@@ -123,15 +123,69 @@
         function simstate() {
 
             if (flag===true){
-                document.getElementById('playpausebutton').src="sins/blueplaydull.png";
+                document.getElementById('playpausebutton').src="sins/bluepausedull.png";
                 flag=false;
+                $('#l1spinner').spinner("disable");
+                $('#l2spinner').spinner("disable");
+                $('#l3spinner').spinner("disable");
+                $('#l4spinner').spinner("disable");
+
+                $('#l1slider').slider("disable");
+                $('#l2slider').slider("disable");
+                $('#l3slider').slider("disable");
+                $('#l4slider').slider("disable");
+
 
             }
 
             else {
-                document.getElementById('playpausebutton').src="sins/bluepausedull.png";
+                document.getElementById('playpausebutton').src="sins/blueplaydull.png";
                 flag=true;
+                $('#l1spinner').spinner("enable");
+                $('#l2spinner').spinner("enable");
+                $('#l3spinner').spinner("enable");
+                $('#l4spinner').spinner("enable");
+
+
+                $('#l1slider').slider("enable");
+                $('#l2slider').slider("enable");
+                $('#l3slider').slider("enable");
+                $('#l4slider').slider("enable");
+
             }
+        }
+
+        function travel_val(input){
+            rodtravel=input;
+            document.getElementById("p1").innerHTML="Displacement is "+rodtravel+" m";
+        }
+
+        function force_val(input){
+
+            force=input;
+            document.getElementById("p2").innerHTML="Force exerted is "+force+" N";
+
+        }
+
+        function heat_val(input){
+
+            heat=input;
+            document.getElementById("p3").innerHTML="Heat in the system is "+heat+" J";
+
+        }
+
+        function energy_val(input){
+
+            energy=input;
+            document.getElementById("p4").innerHTML="Change in Energy &Delta;U is "+energy+" J";
+
+        }
+
+        function work_val(){
+
+            work=parseInt(force*rodtravel);
+            document.getElementById("p5").innerHTML="Work done is "+work+" N";
+
         }
 
         function varinit()
@@ -149,11 +203,6 @@
             $('#l3spinner').spinner("value", 0);
             $('#l4slider').slider("value", 0);
             $('#l4spinner').spinner("value", 0);
-            rodtravel=0;
-            force=0;
-            heat=0;
-            energy=0;
-            work=0;
 
         }
 
@@ -168,40 +217,31 @@
             $('#l2spinner').spinner({ max : 40, min : -40, step : 1 });		    // number initialisation : jQuery widget
             $('#l3slider').slider({ max : 40, min : -40, step : 1 });		    // slider initialisation : jQuery widget
             $('#l3spinner').spinner({ max : 40, min : -40, step : 1 });		    // number initialisation : jQuery widget
-            $('#l4slider').slider({ max : 40, min : -40, step : 1 });		    // slider initialisation : jQuery widget
-            $('#l4spinner').spinner({ max : 40, min : -40, step : 1 });		    // number initialisation : jQuery widget
+            $('#l4slider').slider({ max : 400, min : -400, step : 1 });		    // slider initialisation : jQuery widget
+            $('#l4spinner').spinner({ max : 400, min : -400, step : 1 });		// number initialisation : jQuery widget
 
             // monitoring change in value and connecting slider and number
             // monitoring change in value and connecting slider and number
             // setting trace point coordinate arrays to empty on change of link length
 
-            $( "#l1slider" ).on(  "slide", function( e, ui ) { $('#l1spinner').spinner("value",ui.value);rodtravel=ui.value;document.getElementById("p1").innerHTML=rodtravel;work=parseInt(force*rodtravel); document.getElementById("p5").innerHTML=work;} );
-            $( "#l1spinner" ).on( "spin", function( e, ui ) { $('#l1slider').slider("value",ui.value);rodtravel=ui.value;document.getElementById("p1").innerHTML=rodtravel;work=parseInt(force*rodtravel); document.getElementById("p5").innerHTML=work; } );
+            $( "#l1slider" ).on(  "slide", function( e, ui ) { $('#l1spinner').spinner("value",ui.value);travel_val(ui.value);work_val()} );
+            $( "#l1spinner" ).on( "spin", function( e, ui ) { $('#l1slider').slider("value",ui.value);travel_val(ui.value);work_val() } );
             $( "#l1spinner" ).on( "change", function() {  varchange() } );
-            $( "#l2slider" ).on(  "slide", function( e, ui ) { $('#l2spinner').spinner("value",ui.value);force=ui.value;document.getElementById("p2").innerHTML=force;work=parseInt(force*rodtravel); document.getElementById("p5").innerHTML=work; } );
-            $( "#l2spinner" ).on( "spin", function( e, ui ) { $('#l2slider').slider("value",ui.value);force=ui.value;document.getElementById("p2").innerHTML=force;work=parseInt(force*rodtravel); document.getElementById("p5").innerHTML=work; } );
+            $( "#l2slider" ).on(  "slide", function( e, ui ) { $('#l2spinner').spinner("value",ui.value);force_val(ui.value);work_val(); } );
+            $( "#l2spinner" ).on( "spin", function( e, ui ) { $('#l2slider').slider("value",ui.value);force_val(ui.value);work_val(); } );
             $( "#l2spinner" ).on( "change", function() {  varchange() } );
-            $( "#l3slider" ).on(  "slide", function( e, ui ) { $('#l3spinner').spinner("value",ui.value);heat=ui.value;document.getElementById("p3").innerHTML=heat; } );
-            $( "#l3spinner" ).on( "spin", function( e, ui ) { $('#l3slider').slider("value",ui.value);heat=ui.value;document.getElementById("p3").innerHTML=heat; } );
+            $( "#l3slider" ).on(  "slide", function( e, ui ) { $('#l3spinner').spinner("value",ui.value);heat_val(ui.value); } );
+            $( "#l3spinner" ).on( "spin", function( e, ui ) { $('#l3slider').slider("value",ui.value);heat_val(ui.value); } );
             $( "#l3spinner" ).on( "change", function() {  varchange() } );
-            $( "#l4slider" ).on(  "slide", function( e, ui ) { $('#l4spinner').spinner("value",ui.value);energy=ui.value;document.getElementById("p4").innerHTML=energy; } );
-            $( "#l4spinner" ).on( "spin", function( e, ui ) { $('#l4slider').slider("value",ui.value);energy=ui.value;document.getElementById("p4").innerHTML=energy; } );
+            $( "#l4slider" ).on(  "slide", function( e, ui ) { $('#l4spinner').spinner("value",ui.value);energy_val(ui.value); } );
+            $( "#l4spinner" ).on( "spin", function( e, ui ) { $('#l4slider').slider("value",ui.value);energy_val(ui.value); } );
             $( "#l4spinner" ).on( "change", function() {  varchange() } );
 
-            rodtravel=$('#l1spinner').spinner("value");
-            document.getElementById("p1").innerHTML=rodtravel;
-
-            force=$('#l2spinner').spinner("value");
-            document.getElementById("p2").innerHTML=force;
-
-            heat=$('#l3spinner').spinner("value");
-            document.getElementById("p3").innerHTML=heat;
-
-            energy=$('#l4spinner').spinner("value");
-            document.getElementById("p4").innerHTML=energy;
-
-            work=parseInt(force*rodtravel);
-            document.getElementById("p5").innerHTML=work;
+            travel_val($('#l2spinner').spinner("value"));
+            force_val($('#l2spinner').spinner("value"));
+            heat_val($('#l3spinner').spinner("value"));
+            energy_val($('#l4spinner').spinner("value"));
+            work_val();
 
             varupdate();
 
@@ -258,19 +298,19 @@
     <div id="variables">
 
         <div class="variable">
-            <div class="varname"><p title="Link Length">Travel (m)</p>
+            <div class="varname"><p title="Link Length" style="font-size:95%;">Travel (m)</p>
                 <input id="l1spinner"></div>
             <div id="l1slider"></div>
             <br>
-            <div class="varname"><p title="Link Length">Force (N)</p>
+            <div class="varname"><p title="Link Length" style="font-size:95%;">Force (N)</p>
                 <input id="l2spinner"></div>
             <div id="l2slider"></div>
             <br>
-            <div class="varname"><p title="Link Length">Heat (J)</p>
+            <div class="varname"><p title="Link Length" style="font-size:95%;">Heat (J)</p>
                 <input id="l3spinner"></div>
             <div id="l3slider"></div>
             <br>
-            <div class="varname"><p title="Link Length">Energy (J)</p>
+            <div class="varname"><p title="Link Length" style="font-size:95%;">Energy &Delta;U (J)</p>
                 <input id="l4spinner"></div>
             <div id="l4slider"></div>
         </div>
@@ -282,7 +322,7 @@
 
     <!-- Region for User controls of simulation -->
     <div id="controls">
-        <img id="playpausebutton" onclick="simstate();" src="sins/bluepausedull.png" />
+        <img id="playpausebutton" onclick="simstate();" src="sins/blueplaydull.png" />
         <img id="rotationbutton" onclick="location.reload();" src="sins/bluecwdull.png" />
     </div>
 
