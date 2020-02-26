@@ -104,7 +104,7 @@ div#commentboxleft
 	left:28px;
 	top:505px;
 	height: 65px;
-	width: 190px;
+	width: 240px;
 	color: #e7722b;
 	text-align: left;
 	font-size: 15px;
@@ -123,9 +123,9 @@ div#commentboxright
 	left:313px;
 	top: 505px;
 	height: 65px;
-	width: 190px;
+	width: 240px;
 	color: #e7722b;
-	text-align: right;
+	text-align: left;
 	font-size: 16px;
 	font-family: "Comic Sans MS", cursive, sans-serif;
 }
