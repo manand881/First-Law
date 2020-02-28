@@ -31,7 +31,6 @@
                     };
             })();
 
-
             var canvas = document.getElementById('simscreen'),
                 ctx = canvas.getContext('2d'),
                 crankCaseColor = '#9EA18C',
@@ -60,7 +59,6 @@
                 piston_height = 40,
                 piston_x=220,
                 piston_y=220,
-
 
                 cylinder = {
                     draw : function () {
@@ -110,7 +108,6 @@
                     }
                 };
 
-
             (function animloop(){
                 requestAnimFrame(animloop);
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -119,12 +116,12 @@
 
                 }
 
-
         function simstate() {
 
             if (flag===true){
                 document.getElementById('playpausebutton').src="sins/bluepausedull.png";
                 flag=false;
+
                 $('#l1spinner').spinner("disable");
                 $('#l2spinner').spinner("disable");
                 $('#l3spinner').spinner("disable");
@@ -134,7 +131,6 @@
                 $('#l2slider').slider("disable");
                 $('#l3slider').slider("disable");
                 $('#l4slider').slider("disable");
-
 
             }
 
@@ -146,7 +142,6 @@
                 $('#l3spinner').spinner("enable");
                 $('#l4spinner').spinner("enable");
 
-
                 $('#l1slider').slider("enable");
                 $('#l2slider').slider("enable");
                 $('#l3slider').slider("enable");
@@ -156,6 +151,7 @@
         }
 
         function travel_val(input){
+
             rodtravel=input;
             document.getElementById("p1").innerHTML="Displacement is "+rodtravel+" m";
         }
@@ -191,12 +187,6 @@
         function varinit()
         {
 
-            rodtravel=0;
-            work=0;
-            energy=0;
-            force=0;
-            heat=0;
-
             varchange();
 
             //Variable r1 slider and number input types
@@ -210,6 +200,11 @@
             $('#l4slider').slider("value", 0);
             $('#l4spinner').spinner("value", 0);
 
+            travel_val(0);
+            work_val(0);
+            energy_val(0);
+            force_val(0);
+            heat_val(0);
 
         }
 
@@ -262,11 +257,9 @@
             $('#l3slider').slider("value", $('#l3spinner').spinner('value'));  //updating slider location with change in spinner(debug)
             $('#l4slider').slider("value", $('#l4spinner').spinner('value'));  //updating slider location with change in spinner(debug)
 
-
         }
 
     </script>
-
 
 </head>
 
