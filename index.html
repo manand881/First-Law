@@ -17,8 +17,9 @@
         var energy=0;
         var heat=0;
         var flag=true;
+        var step=0;
 
-        function dummy() {
+            function dummy() {
 
             window.requestAnimFrame = (function(){
                 return window.requestAnimationFrame     ||
@@ -34,21 +35,7 @@
             var canvas = document.getElementById('simscreen'),
                 ctx = canvas.getContext('2d'),
                 crankCaseColor = '#9EA18C',
-                backgroundColor = '#463E41',
                 pistonColor = '#676482',
-                crankColor = '#5D5B6E',
-                crankShaftColor = 'rgba(99, 124, 145, 0.8)',//'#637C91',
-                crankCaseWidth = 50,
-                crankCenterX = 270,
-                crankCenterY = 250,
-                upAngle = 1.5 * Math.PI,
-                semiOpeningAngle = Math.asin(0.5),
-                cylinderBaseY = crankCenterY + Math.sin(upAngle + semiOpeningAngle) * crankCaseWidth,
-                cylinderBaseSemiWidth = Math.cos(upAngle + semiOpeningAngle) * crankCaseWidth,
-                cylinderHeight = 85,
-                angle = 0,
-                dAngle = 0.1,
-                rodLength = 80,
                 left_wall_x=220,
                 left_wall_y_start=150,
                 left_wall_y_end=350,
@@ -92,7 +79,7 @@
 
                         ctx.beginPath();
                         ctx.fillStyle = pistonColor;
-                        ctx.fillRect(piston_x+2,piston_y+rodtravel,piston_width-4,piston_height);
+                        ctx.fillRect(piston_x+2,piston_y+step,piston_width-4,piston_height);
                         ctx.stroke();
 
                         // connecting rod
@@ -101,10 +88,37 @@
                         ctx.strokeStyle = pistonColor;
                         ctx.fillStyle = pistonColor;
                         ctx.lineWidth = 10;
-                        ctx.moveTo((right_wall_x + left_wall_x)/2,piston_y+rodtravel);
-                        ctx.lineTo((right_wall_x + left_wall_x)/2,piston_y+rodtravel-70);
+                        ctx.moveTo((right_wall_x + left_wall_x)/2,piston_y+step);
+                        ctx.lineTo((right_wall_x + left_wall_x)/2,piston_y+step-70);
                         ctx.lineCap = 'round';
                         ctx.stroke();
+
+                        if(flag === false){
+
+                            work=Math.round(step)*force;
+                            energy=parseInt(heat)-parseInt(work);
+
+                            if(step<rodtravel){
+
+                                step+=0.2;
+                                document.getElementById("p1").innerHTML="Displacement is "+Math.round(step)+" m";
+                                document.getElementById("p5").innerHTML="Work done is "+work+" N";
+                                document.getElementById("p4").innerHTML="Change in Energy &Delta;U is "+energy+" J";
+
+                            }
+                            else{
+
+                                step-=0.2;
+                                document.getElementById("p1").innerHTML="Displacement is "+Math.round(step)+" m";
+                                document.getElementById("p5").innerHTML="Work done is "+work+" N";
+                                document.getElementById("p4").innerHTML="Change in Energy &Delta;U is "+energy+" J";
+
+                            }
+                        }
+                        else{
+                            step=0;
+                        }
+
                     }
                 };
 
@@ -114,7 +128,7 @@
                 cylinder.draw();
             })();
 
-                }
+        }
 
         function simstate() {
 
@@ -137,6 +151,7 @@
             else {
                 document.getElementById('playpausebutton').src="sins/blueplaydull.png";
                 flag=true;
+
                 $('#l1spinner').spinner("enable");
                 $('#l2spinner').spinner("enable");
                 $('#l3spinner').spinner("enable");
@@ -219,24 +234,31 @@
             $('#l2spinner').spinner({ max : 40, min : -40, step : 1 });		    // number initialisation : jQuery widget
             $('#l3slider').slider({ max : 40, min : -40, step : 1 });		    // slider initialisation : jQuery widget
             $('#l3spinner').spinner({ max : 40, min : -40, step : 1 });		    // number initialisation : jQuery widget
-            $('#l4slider').slider({ max : 400, min : -400, step : 1 });		    // slider initialisation : jQuery widget
-            $('#l4spinner').spinner({ max : 400, min : -400, step : 1 });		// number initialisation : jQuery widget
+            $('#l4slider').slider({ max : 1640, min : -1640, step : 1 });		// slider initialisation : jQuery widget
+            $('#l4spinner').spinner({ max : 1640, min : -1640, step : 1 });		// number initialisation : jQuery widget
 
             // monitoring change in value and connecting slider and number
             // monitoring change in value and connecting slider and number
             // setting trace point coordinate arrays to empty on change of link length
 
-            $( "#l1slider" ).on(  "slide", function( e, ui ) { $('#l1spinner').spinner("value",ui.value);travel_val(ui.value);work_val()} );
-            $( "#l1spinner" ).on( "spin", function( e, ui ) { $('#l1slider').slider("value",ui.value);travel_val(ui.value);work_val() } );
+            // heat
+            $( "#l1slider" ).on(  "slide",  function( e, ui ) { $('#l1spinner').spinner("value",ui.value);travel_val(ui.value);work_val(); } );
+            $( "#l1spinner" ).on( "spin",   function( e, ui ) { $('#l1slider').slider("value",ui.value);travel_val(ui.value);work_val(); } );
             $( "#l1spinner" ).on( "change", function() {  varchange() } );
-            $( "#l2slider" ).on(  "slide", function( e, ui ) { $('#l2spinner').spinner("value",ui.value);force_val(ui.value);work_val(); } );
-            $( "#l2spinner" ).on( "spin", function( e, ui ) { $('#l2slider').slider("value",ui.value);force_val(ui.value);work_val(); } );
+
+            // work
+            $( "#l2slider" ).on(  "slide",  function( e, ui ) { $('#l2spinner').spinner("value",ui.value);force_val(ui.value);work_val(); } );
+            $( "#l2spinner" ).on( "spin",   function( e, ui ) { $('#l2slider').slider("value",ui.value);force_val(ui.value);work_val(); } );
             $( "#l2spinner" ).on( "change", function() {  varchange() } );
-            $( "#l3slider" ).on(  "slide", function( e, ui ) { $('#l3spinner').spinner("value",ui.value);heat_val(ui.value); } );
-            $( "#l3spinner" ).on( "spin", function( e, ui ) { $('#l3slider').slider("value",ui.value);heat_val(ui.value); } );
+
+            // heat
+            $( "#l3slider" ).on(  "slide",  function( e, ui ) { $('#l3spinner').spinner("value",ui.value);heat_val(ui.value); } );
+            $( "#l3spinner" ).on( "spin",   function( e, ui ) { $('#l3slider').slider("value",ui.value);heat_val(ui.value); } );
             $( "#l3spinner" ).on( "change", function() {  varchange() } );
-            $( "#l4slider" ).on(  "slide", function( e, ui ) { $('#l4spinner').spinner("value",ui.value);energy_val(ui.value); } );
-            $( "#l4spinner" ).on( "spin", function( e, ui ) { $('#l4slider').slider("value",ui.value);energy_val(ui.value); } );
+
+            // energy
+            $( "#l4slider" ).on(  "slide",  function( e, ui ) { $('#l4spinner').spinner("value",ui.value);energy_val(ui.value); } );
+            $( "#l4spinner" ).on( "spin",   function( e, ui ) { $('#l4slider').slider("value",ui.value);energy_val(ui.value); } );
             $( "#l4spinner" ).on( "change", function() {  varchange() } );
 
             travel_val($('#l2spinner').spinner("value"));
