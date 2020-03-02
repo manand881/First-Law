@@ -19,6 +19,8 @@
         var flag=true;
         var step=0;
 
+
+
             function dummy() {
 
             window.requestAnimFrame = (function(){
@@ -199,6 +201,38 @@
 
         }
 
+        function randomise(){
+
+           let rand_distance = Math.floor(Math.random() * 81) - 40;
+           let rand_heat=Math.floor(Math.random() * 81) - 40;
+           let rand_force=Math.floor(Math.random() * 81) - 40;
+           if(energy === rand_heat - rand_distance*rand_force){
+
+               console.log(energy,rand_heat,rand_distance,rand_force);
+               heat=rand_heat;
+               rodtravel=rand_distance;
+               force=rand_force;
+
+               $('#l1spinner').spinner("value",rodtravel);
+               $('#l1slider').slider("value",rodtravel);
+
+               $('#l2spinner').spinner("value",force);
+               $('#l2slider').slider("value",force);
+
+               $('#l3spinner').spinner("value",heat);
+               $('#l3slider').slider("value",heat);
+
+               travel_val(rodtravel);
+               force_val(force);
+               heat_val(heat);
+               work_val();
+
+           }
+           else{
+               randomise();
+           }
+        }
+
         function varinit()
         {
 
@@ -241,31 +275,94 @@
             // monitoring change in value and connecting slider and number
             // setting trace point coordinate arrays to empty on change of link length
 
+
             // heat
-            $( "#l1slider" ).on(  "slide",  function( e, ui ) { $('#l1spinner').spinner("value",ui.value);travel_val(ui.value);work_val(); } );
-            $( "#l1spinner" ).on( "spin",   function( e, ui ) { $('#l1slider').slider("value",ui.value);travel_val(ui.value);work_val(); } );
-            $( "#l1spinner" ).on( "change", function() {  varchange() } );
+
+            $( "#l1slider" ).on(  "slide",  function( e, ui ) {
+                $('#l1spinner').spinner("value",ui.value);
+
+                travel_val(ui.value);
+                work_val();
+
+                $('#l4spinner').spinner("value",heat-work);
+                $('#l4slider').slider("value",heat-work);
+            });
+
+            $( "#l1spinner" ).on( "spin",   function( e, ui ) {
+                $('#l1slider').slider("value",ui.value);
+
+                travel_val(ui.value);
+                work_val();
+
+                $('#l4spinner').spinner("value",heat-work);
+                $('#l4slider').slider("value",heat-work);
+            } );
+
+            $( "#l1spinner" ).on( "change", function() {
+                varchange() } );
 
             // work
-            $( "#l2slider" ).on(  "slide",  function( e, ui ) { $('#l2spinner').spinner("value",ui.value);force_val(ui.value);work_val(); } );
-            $( "#l2spinner" ).on( "spin",   function( e, ui ) { $('#l2slider').slider("value",ui.value);force_val(ui.value);work_val(); } );
-            $( "#l2spinner" ).on( "change", function() {  varchange() } );
+
+            $( "#l2slider" ).on(  "slide",  function( e, ui ) {
+                $('#l2spinner').spinner("value",ui.value);
+
+                force_val(ui.value);
+                work_val();
+
+                $('#l4spinner').spinner("value",heat-work);
+                $('#l4slider').slider("value",heat-work);} );
+
+            $( "#l2spinner" ).on( "spin",   function( e, ui ) {
+                $('#l2slider').slider("value",ui.value);
+                force_val(ui.value);
+                work_val();
+                $('#l4spinner').spinner("value",heat-work);
+                $('#l4slider').slider("value",heat-work);
+            } );
+
+            $( "#l2spinner" ).on( "change", function() {
+                varchange() } );
 
             // heat
-            $( "#l3slider" ).on(  "slide",  function( e, ui ) { $('#l3spinner').spinner("value",ui.value);heat_val(ui.value); } );
-            $( "#l3spinner" ).on( "spin",   function( e, ui ) { $('#l3slider').slider("value",ui.value);heat_val(ui.value); } );
-            $( "#l3spinner" ).on( "change", function() {  varchange() } );
+
+            $( "#l3slider" ).on(  "slide",  function( e, ui ) {
+                $('#l3spinner').spinner("value",ui.value);
+                heat_val(ui.value);
+                $('#l4spinner').spinner("value",heat-work);
+                $('#l4slider').slider("value",heat-work);} );
+
+            $( "#l3spinner" ).on( "spin",   function( e, ui ) {
+                $('#l3slider').slider("value",ui.value);
+                heat_val(ui.value);
+                $('#l4spinner').spinner("value",heat-work);
+                $('#l4slider').slider("value",heat-work);} );
+
+            $( "#l3spinner" ).on( "change", function() {
+                varchange() } );
 
             // energy
-            $( "#l4slider" ).on(  "slide",  function( e, ui ) { $('#l4spinner').spinner("value",ui.value);energy_val(ui.value); } );
-            $( "#l4spinner" ).on( "spin",   function( e, ui ) { $('#l4slider').slider("value",ui.value);energy_val(ui.value); } );
-            $( "#l4spinner" ).on( "change", function() {  varchange() } );
+
+            $( "#l4slider" ).on(  "slide",  function( e, ui ) {
+                $('#l4spinner').spinner("value",ui.value);
+                energy_val(ui.value);
+                randomise();} );
+
+            $( "#l4spinner" ).on( "spin",   function( e, ui ) {
+                $('#l4slider').slider("value",ui.value);
+                energy_val(ui.value);
+                randomise();} );
+
+            $( "#l4spinner" ).on( "change", function() {
+                varchange();
+                randomise();} );
 
             travel_val($('#l2spinner').spinner("value"));
             force_val($('#l2spinner').spinner("value"));
             heat_val($('#l3spinner').spinner("value"));
             energy_val($('#l4spinner').spinner("value"));
             work_val();
+
+            //$('#l4slider').slider("value", $('#l3spinner').spinner('value')-$('#l1spinner').spinner('value')*$('#l2spinner').spinner('value'));
 
             varupdate();
 
