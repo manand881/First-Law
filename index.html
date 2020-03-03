@@ -16,7 +16,7 @@
         var flag=true;
         var step=0;
 
-            function dummy() {
+        function dummy() {
 
             window.requestAnimFrame = (function(){
                 return window.requestAnimationFrame     ||
@@ -106,17 +106,17 @@
                             if(step<rodtravel){
 
                                 step+=0.2;
-                                document.getElementById("p1").innerHTML="Displacement is "+Math.round(step)+" m";
-                                document.getElementById("p5").innerHTML="Work done is "+work+" N";
-                                document.getElementById("p4").innerHTML="Change in Energy &Delta;U is "+energy+" J";
+                                document.getElementById("p1").innerHTML="Displacement : "+Math.round(step)+" m";
+                                document.getElementById("p5").innerHTML="Work done by the system : "+work+" J";
+                                document.getElementById("p4").innerHTML="Change in Energy, &Delta;U : "+energy+" J";
 
                             }
                             else{
 
                                 step-=0.2;
-                                document.getElementById("p1").innerHTML="Displacement is "+Math.round(step)+" m";
-                                document.getElementById("p5").innerHTML="Work done is "+work+" N";
-                                document.getElementById("p4").innerHTML="Change in Energy &Delta;U is "+energy+" J";
+                                document.getElementById("p1").innerHTML="Displacement : "+Math.round(step)+" m";
+                                document.getElementById("p5").innerHTML="Work done by the system : "+work+" J";
+                                document.getElementById("p4").innerHTML="Change in Energy, &Delta;U : "+energy+" J";
 
                             }
                         }
@@ -153,9 +153,10 @@
                 if (work===0){
                     if(heat===0){
                         document.getElementById("p6").innerHTML="It is an isolated System";
-                    }else{
-                    document.getElementById("p6").innerHTML="The process is Isovolumetric";
                     }
+                    // else{
+                    // document.getElementById("p6").innerHTML="The process is Isochoric";
+                    // }
                 }
                 else if (energy===0){
                     document.getElementById("p6").innerHTML="The process is Isothermal";
@@ -188,67 +189,67 @@
         function travel_val(input){
 
             rodtravel=input;
-            document.getElementById("p1").innerHTML="Displacement is "+rodtravel+" m";
+            document.getElementById("p1").innerHTML="Displacement : "+rodtravel+" m";
         }
 
         function force_val(input){
 
             force=input;
-            document.getElementById("p2").innerHTML="Force exerted is "+force+" N";
+            document.getElementById("p2").innerHTML="Force exerted : "+force+" N";
 
         }
 
         function heat_val(input){
 
             heat=input;
-            document.getElementById("p3").innerHTML="Heat added to the system is "+heat+" J";
+            document.getElementById("p3").innerHTML="Heat added to the system : "+heat+" J";
 
         }
 
         function energy_val(input){
 
             energy=input;
-            document.getElementById("p4").innerHTML="Change in Energy &Delta;U is "+energy+" J";
+            document.getElementById("p4").innerHTML="Change in Energy, &Delta;U : "+energy+" J";
 
         }
 
         function work_val(){
 
             work=parseInt(force*rodtravel);
-            document.getElementById("p5").innerHTML="Work done is "+work+" N";
+            document.getElementById("p5").innerHTML="Work done by the system : "+work+" J";
 
         }
 
         function randomise(){
 
-           let rand_distance = Math.floor(Math.random() * 81) - 40;
-           let rand_heat=Math.floor(Math.random() * 81) - 40;
-           let rand_force=Math.floor(Math.random() * 81) - 40;
-           if(energy === rand_heat - rand_distance*rand_force){
+            let rand_distance = Math.floor(Math.random() * 81) - 40;
+            let rand_heat=Math.floor(Math.random() * 81) - 40;
+            let rand_force=Math.floor(Math.random() * 81) - 40;
+            if(energy === rand_heat - rand_distance*rand_force){
 
-               console.log(energy,rand_heat,rand_distance,rand_force);
-               heat=rand_heat;
-               rodtravel=rand_distance;
-               force=rand_force;
+                console.log(energy,rand_heat,rand_distance,rand_force);
+                heat=rand_heat;
+                rodtravel=rand_distance;
+                force=rand_force;
 
-               $('#l1spinner').spinner("value",rodtravel);
-               $('#l1slider').slider("value",rodtravel);
+                $('#l1spinner').spinner("value",rodtravel);
+                $('#l1slider').slider("value",rodtravel);
 
-               $('#l2spinner').spinner("value",force);
-               $('#l2slider').slider("value",force);
+                $('#l2spinner').spinner("value",force);
+                $('#l2slider').slider("value",force);
 
-               $('#l3spinner').spinner("value",heat);
-               $('#l3slider').slider("value",heat);
+                $('#l3spinner').spinner("value",heat);
+                $('#l3slider').slider("value",heat);
 
-               travel_val(rodtravel);
-               force_val(force);
-               heat_val(heat);
-               work_val();
+                travel_val(rodtravel);
+                force_val(force);
+                heat_val(heat);
+                work_val();
 
-           }
-           else{
-               randomise();
-           }
+            }
+            else{
+                randomise();
+            }
         }
 
         function varinit()
@@ -293,7 +294,7 @@
             // monitoring change in value and connecting slider and number
             // setting trace point coordinate arrays to empty on change of link length
 
-            // heat
+            // travel
 
             $( "#l1slider" ).on(  "slide",  function( e, ui ) {
                 $('#l1spinner').spinner("value",ui.value);
@@ -316,7 +317,7 @@
             $( "#l1spinner" ).on( "change", function() {
                 varchange() } );
 
-            // work
+            // force
 
             $( "#l2slider" ).on(  "slide",  function( e, ui ) {
                 $('#l2spinner').spinner("value",ui.value);
@@ -376,13 +377,11 @@
                 varchange();
                 randomise();} );
 
-            travel_val($('#l2spinner').spinner("value"));
+            travel_val($('#l1spinner').spinner("value"));
             force_val($('#l2spinner').spinner("value"));
             heat_val($('#l3spinner').spinner("value"));
             energy_val($('#l4spinner').spinner("value"));
             work_val();
-
-            //$('#l4slider').slider("value", $('#l3spinner').spinner('value')-$('#l1spinner').spinner('value')*$('#l2spinner').spinner('value'));
 
             varupdate();
         }
