@@ -106,17 +106,17 @@
                             if(step<rodtravel){
 
                                 step+=0.2;
-                                document.getElementById("p1").innerHTML="Displacement is "+Math.round(step)+" m";
-                                document.getElementById("p5").innerHTML="Work done is "+work+" N";
-                                document.getElementById("p4").innerHTML="Change in Energy &Delta;U is "+energy+" J";
+                                document.getElementById("p1").innerHTML="Displacement : "+Math.round(step)+" m";
+                                document.getElementById("p5").innerHTML="Work done : "+work+" J";
+                                document.getElementById("p4").innerHTML="Change in Energy &Delta;U : "+energy+" J";
 
                             }
                             else{
 
                                 step-=0.2;
-                                document.getElementById("p1").innerHTML="Displacement is "+Math.round(step)+" m";
-                                document.getElementById("p5").innerHTML="Work done is "+work+" N";
-                                document.getElementById("p4").innerHTML="Change in Energy &Delta;U is "+energy+" J";
+                                document.getElementById("p1").innerHTML="Displacement : "+Math.round(step)+" m";
+                                document.getElementById("p5").innerHTML="Work done : "+work+" J";
+                                document.getElementById("p4").innerHTML="Change in Energy, &Delta;U : "+energy+" J";
 
                             }
                         }
@@ -153,9 +153,10 @@
                 if (work===0){
                     if(heat===0){
                         document.getElementById("p6").innerHTML="It is an isolated System";
-                    }else{
-                    document.getElementById("p6").innerHTML="The process is Isovolumetric";
                     }
+                    // else{
+                    // document.getElementById("p6").innerHTML="The process is Isochoric";
+                    // }
                 }
                 else if (energy===0){
                     document.getElementById("p6").innerHTML="The process is Isothermal";
@@ -188,34 +189,34 @@
         function travel_val(input){
 
             rodtravel=input;
-            document.getElementById("p1").innerHTML="Displacement is "+rodtravel+" m";
+            document.getElementById("p1").innerHTML="Displacement : "+rodtravel+" m";
         }
 
         function force_val(input){
 
             force=input;
-            document.getElementById("p2").innerHTML="Force exerted is "+force+" N";
+            document.getElementById("p2").innerHTML="Force exerted : "+force+" N";
 
         }
 
         function heat_val(input){
 
             heat=input;
-            document.getElementById("p3").innerHTML="Heat added to the system is "+heat+" J";
+            document.getElementById("p3").innerHTML="Heat added to the system : "+heat+" J";
 
         }
 
         function energy_val(input){
 
             energy=input;
-            document.getElementById("p4").innerHTML="Change in Energy &Delta;U is "+energy+" J";
+            document.getElementById("p4").innerHTML="Change in Energy, &Delta;U : "+energy+" J";
 
         }
 
         function work_val(){
 
             work=parseInt(force*rodtravel);
-            document.getElementById("p5").innerHTML="Work done is "+work+" N";
+            document.getElementById("p5").innerHTML="Work done by the system : "+work+" J";
 
         }
 
